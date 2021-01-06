@@ -3,8 +3,8 @@ let client = new Discord.Client()
 let Enmap = require("enmap")
 let canvacord = require("canvacord")
 client.points = new Enmap({ name: "points" })
-client.login("NzYzODIxNDAxNTA1MjY3NzQz.X39SHQ.1wIJVybtNnJfKl9IfoPEzBqR27A")
-let prefix = "/";
+client.login(process.env.TOKEN)
+let prefix = process.env.PREFIX;
 
 client.on('ready', () => {
 console.log(`Iam Ready`);
