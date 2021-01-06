@@ -1,0 +1,25 @@
+{
+  "name": "Super-Mee6-Rank-By-NIRO",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NIR0-V/Super-Mee6-Rank-By-NIRO.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NIR0-V/Super-Mee6-Rank-By-NIRO/issues"
+  },
+  "homepage": "https://github.com/NIR0-V/Super-Mee6-Rank-By-NIRO#readme",
+  "dependencies": {
+    "canvacord": "^5.0.8",
+    "discord.js": "^12.5.1",
+    "enmap": "^5.8.2"
+  }
+}
