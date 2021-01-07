@@ -13,9 +13,12 @@ console.log(`channel : ${client.channels.cache.size}`)
 console.log(`users : ${client.users.cache.size}`)
 console.log(`${client.user.tag}`)
 console.log(`bot id : ${client.user.id}`)
-client.user.setActivity(`${prefix}rank`,`PLAYING`)
-client.user.setStatus(`dnd`)
+client.user.setActivity(`${prefix}rank | ${prefix}leaderboard`,`PLAYING`)
  })
+
+client.on("ready", () => {
+  client.user.setStatus(`dnd`)
+})
 
 client.on("message", async (message) => {
     if (message.author.bot) return;
@@ -54,7 +57,7 @@ client.on("message", async (message) => {
  
       const embed = new Discord.MessageEmbed()
         .setTitle(`Ranking of:  ${message.author.username}`)
-        .setTimestamp()
+        .setTimestamp(`https://media.discordapp.net/attachments/756329106953601225/796545377212956682/5221_MEE6_LEVLEUP.gif`)
         .setDescription(`You've leveled up to Level: **\`${curLevel}\`**! (Points: \`${Math.floor(client.points.get(key, `points`) * 100) / 100}\`) `)
         .setColor("GREEN");
     
@@ -108,14 +111,13 @@ client.on("message", async (message) => {
       let tempmsg = await message.channel.send(
         new Discord.MessageEmbed()
         .setColor("RED")
-        .setTitle(`Loding...`,`https://cdn.discordapp.com/emojis/769935094285860894.gif`))
+        .setTitle("Loding...","https://media.discordapp.net/attachments/756329106953601225/796545377212956682/5221_MEE6_LEVLEUP.gif"))
 
       let color;
       let x = ["dnd","idle","online","streaming"]
       let x3 = Math.floor(Math.random() * x.length);
       const rank = new canvacord.Rank()
-
-        .setAvatar(rankuser.displayAvatarURL({ dynamic: true, format: 'png' }))
+        .setAvatar(rankuser.displayAvatarURL({ dynamic: false, format: 'png' }))
         .setCurrentXP(Number(curpoints.toFixed(4)), "#EFFBFB")
         .setRequiredXP(Number(curnextlevel.toFixed(2)),"#585858")
         .setStatus(`${x[x3]}`, true, 7)
@@ -126,7 +128,7 @@ client.on("message", async (message) => {
         .setUsername(rankuser.username, "#EFFBFB")
         .setRank(Number(i), "Rank", true)
         .setLevel(Number(client.points.get(key, `level`)), "LEVEL", true)
-        .setDiscriminator(rankuser.discriminator, color);
+        .setDiscriminator(rankuser.discriminator, color)
       rank.build()
         .then(async data => {
       
@@ -144,7 +146,32 @@ client.on("message", async (message) => {
           return;
         });
     }
-  })
+    if (message.content.toLowerCase() === `${prefix}leaderboard`) {
+      //some databasing and math
+      const filtered = client.points.filter(p => p.guild === message.guild.id).array();
+      const sorted = filtered.sort((a, b) => b.points - a.points);
+      const top10 = sorted.splice(0, 10);
+      const embed = new Discord.MessageEmbed()
+        .setTitle(`${message.guild.name}: Leaderboard`)
+        .setTimestamp()
+        .setDescription(`Top 10 Ranking:`)
+        .setColor("ORANGE");
+      //set counter to 0
+      let i = 0;
+      //get rank 
+      for (const data of top10) {
+        await delay(15); try {
+          i++;
+          embed.addField(`**${i}**. ${client.users.cache.get(data.user).tag}`, `Points: \`${Math.floor(data.points * 100) / 100}\` | Level: \`${data.level}\``);
+        } catch {
+          i++; //if usernot found just do this
+          embed.addField(`**${i}**. ${client.users.cache.get(data.user)}`, `Points: \`${Math.floor(data.points * 100) / 100}\` | Level: \`${data.level}\``);
+        }
+      }
+      //schick das embed
+      return message.channel.send(embed);
+    }
+})
   function delay(delayInms) {
     return new Promise(resolve => {
       setTimeout(() => {
