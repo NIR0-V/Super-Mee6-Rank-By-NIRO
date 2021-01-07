@@ -3,7 +3,7 @@ let client = new Discord.Client()
 let Enmap = require("enmap")
 let canvacord = require("canvacord")
 client.points = new Enmap({ name: "points" })
-client.login(process.env.TOKEN)
+client.login(process.env.TOKEN).catch(err => console.error(`[ Discord ] Worng Token :<`))
 let prefix = process.env.PREFIX;
 
 client.on('ready', () => {
@@ -33,11 +33,11 @@ client.on("message", async (message) => {
       level: 1
     });
 
-    var msgl = message.content.length / (Math.floor(Math.random() * (message.content.length - message.content.length / 100 + 1) + 10));
+    var msgl = message.content.length / (Math.floor(Math.random() * (message.content.length - message.content.length / 100 + 1) + 100));
 
     if (msgl < 10) {
    
-      var randomnum = Math.floor((Math.random() * 2) * 100) / 100
+      var randomnum = Math.floor((Math.random() * 1) * 1) / 100
   
       client.points.math(key, `+`, randomnum, `points`)
       client.points.inc(key, `points`);
@@ -45,7 +45,7 @@ client.on("message", async (message) => {
  
     else {
     
-      var randomnum = 1 + Math.floor(msgl * 100) / 100
+      var randomnum = 1 + Math.floor(msgl * 20) / 100
      
       client.points.math(key, `+`, randomnum, `points`)
       client.points.inc(key, `points`);
@@ -147,7 +147,7 @@ client.on("message", async (message) => {
         });
     }
     if (message.content.toLowerCase() === `${prefix}leaderboard`) {
-      //some databasing and math
+      
       const filtered = client.points.filter(p => p.guild === message.guild.id).array();
       const sorted = filtered.sort((a, b) => b.points - a.points);
       const top10 = sorted.splice(0, 10);
@@ -156,19 +156,19 @@ client.on("message", async (message) => {
         .setTimestamp()
         .setDescription(`Top 10 Ranking:`)
         .setColor("ORANGE");
-      //set counter to 0
+      
       let i = 0;
-      //get rank 
+      
       for (const data of top10) {
         await delay(15); try {
           i++;
           embed.addField(`**${i}**. ${client.users.cache.get(data.user).tag}`, `Points: \`${Math.floor(data.points * 100) / 100}\` | Level: \`${data.level}\``);
         } catch {
-          i++; //if usernot found just do this
+          i++; 
           embed.addField(`**${i}**. ${client.users.cache.get(data.user)}`, `Points: \`${Math.floor(data.points * 100) / 100}\` | Level: \`${data.level}\``);
         }
       }
-      //schick das embed
+      
       return message.channel.send(embed);
     }
 })
